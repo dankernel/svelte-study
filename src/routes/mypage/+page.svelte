@@ -9,6 +9,8 @@
 
 	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+	let subscriptionType = '';
+	let user;
 	let email = '';
 	let password = '';
 
@@ -34,6 +36,11 @@
 
 	const getSession = async () => {
 		const { data, error } = await supabase.auth.getSession();
+		return data.session;
+	};
+
+	const getEmail = async () => {
+		const { data, error } = await supabase.auth.getSession();
 		return data.session?.user.email;
 	};
 
@@ -44,35 +51,62 @@
 	};
 
 	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
 	const navigateToSignup = (): void => {
 		goto('/sign-up');
 	};
 
-	function gotoMypage() {
-		location.href = 'mypage';
+	function gotoLogin() {
+		location.href = 'login';
 	}
+
+	onMount(async () => {
+		user = supabase.auth.user();
+		if (!user) {
+			console.log('User is not logged in');
+			// Handle the case when user is not logged in.
+			return;
+		}
+	});
+
+	const handleSubscription = async () => {
+		const { data, error } = await supabase
+			.from('subscriptions')
+			.insert([{ user_id: user.id, subscription_type: subscriptionType }]);
+
+		if (error) {
+			console.error('Error inserting subscription: ', error);
+			// Handle the error.
+		} else {
+			console.log('Subscription inserted: ', data);
+			// Handle the success.
+		}
+	};
 </script>
 
 {#await getSession() then session}
 	{#if session}
-		<p>Welcome, {session}!</p>
-		<button on:click={gotoMypage}>My Page</button>
-		<br />
+		<p>Welcome, {session.user.email}!</p>
 		<button on:click={logOut}>Log out</button>
 	{:else}
-		<div class="container">
-			<h1>Login</h1>
-			<input bind:value={email} type="email" placeholder="Email" />
-			<input bind:value={password} type="password" placeholder="Password" />
-			<button on:click={signIn}>Sign In</button>
-			<br />
-			<button on:click={navigateToSignup}>Sign-up</button>
-		</div>
+		<h1>wrong approach</h1>
+		<button on:click={gotoLogin}>login</button>
 	{/if}
 {/await}
 
 <SvelteToast />
+
+<div>
+	<h2>Select your subscription</h2>
+	<select bind:value={subscriptionType}>
+		<option value="">Select a subscription</option>
+		<option value="type1">Type 1</option>
+		<option value="type2">Type 2</option>
+		<!-- Add more options as needed -->
+	</select>
+	<button on:click={handleSubscription}>Subscribe</button>
+</div>
 
 <style lang="scss">
 	@import '/src/styles.scss';

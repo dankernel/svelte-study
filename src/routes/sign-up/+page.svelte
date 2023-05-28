@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { PUBLIC_DB_API_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
 	import { createClient } from '@supabase/supabase-js';
-	import { onMount } from 'svelte';
+	import { SvelteToast } from '@zerodevx/svelte-toast';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
 	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
@@ -20,8 +21,19 @@
 			email,
 			password
 		});
-		if (error) console.error(error);
-		else console.log(data);
+		if (error) {
+			console.error(error);
+			toast.push(error.message, {
+				theme: {
+					'--toastColor': 'mintcream',
+					'--toastBackground': 'rgba(187,72,120,0.9)',
+					'--toastBarBackground': '#2F855A'
+				}
+			});
+		} else {
+			console.log(data);
+			location.replace('login');
+		}
 	};
 
 	const getSession = async () => {
@@ -51,6 +63,8 @@
 		</div>
 	{/if}
 {/await}
+
+<SvelteToast />
 
 <style lang="scss">
 	@import '/src/styles.scss';
