@@ -3,6 +3,7 @@
 	import { createClient } from '@supabase/supabase-js';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import { toast } from '@zerodevx/svelte-toast';
+	import Navbar from '../../components/Navbar.svelte';
 
 	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
 	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
@@ -53,6 +54,8 @@
 		location.href = 'mypage';
 	}
 </script>
+
+<Navbar />
 
 {#await getSession() then session}
 	{#if session}

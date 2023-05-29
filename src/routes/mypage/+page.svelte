@@ -3,6 +3,7 @@
 	import { createClient } from '@supabase/supabase-js';
 	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import { toast } from '@zerodevx/svelte-toast';
+	import Navbar from '../../components/Navbar.svelte';
 
 	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
 	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
@@ -32,7 +33,6 @@
 				}
 			});
 		} else {
-			console.log(data);
 			location.reload();
 		}
 	};
@@ -75,7 +75,6 @@
 	onMount(async () => {
 		user = (await supabase.auth.getSession()).data.session?.user;
 		if (!user) {
-			console.log('User is not logged in');
 			// Handle the case when user is not logged in.
 			return;
 		}
@@ -85,9 +84,6 @@
 
 	const handleSubscription = async () => {
 		session = await getSession();
-
-		console.log(session?.user.id);
-		console.log(subscriptionType);
 
 		const { data, error } = await supabase
 			.from('subscriptions')
@@ -104,7 +100,6 @@
 			});
 			// Handle the error.
 		} else {
-			console.log('Subscription inserted: ', data);
 			// Handle the success.
 
 			toast.push('subscription!', {
@@ -126,7 +121,7 @@
 			.select('*')
 			.gte('expiration_date', currentDate)
 			.order('created_at');
-		console.log(subscriptions);
+
 		if (subscriptions == null) {
 			return;
 		}
@@ -138,13 +133,14 @@
 	const cancelSubscription = async (id: string) => {
 		// 여기에 구독 취소에 필요한 로직을 구현합니다.
 		// Supabase의 업데이트 또는 삭제 작업 등을 수행할 수 있습니다.
-		console.log('구독 취소:', id);
 
 		const { data, error } = await supabase.from('subscriptions').delete().eq('id', id);
 
 		readSubscribe();
 	};
 </script>
+
+<Navbar />
 
 {#await getSession() then session}
 	{#if session}

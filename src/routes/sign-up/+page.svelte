@@ -71,7 +71,3 @@
 {/await}
 
 <SvelteToast />
-
-<style lang="scss">
-	@import '/src/styles.scss';
-</style>
