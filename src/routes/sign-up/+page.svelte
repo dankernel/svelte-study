@@ -9,6 +9,7 @@
 
 	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+	let user_name: string = '';
 	let email: string = '';
 	let password: string = '';
 
@@ -19,8 +20,12 @@
 	const signUp = async (): Promise<void> => {
 		const { data, error } = await supabase.auth.signUp({
 			email,
-			password
+			password,
+			options: {
+				data: { user_name: user_name }
+			}
 		});
+
 		if (error) {
 			console.error(error);
 			toast.push(error.message, {
@@ -57,6 +62,7 @@
 	{:else}
 		<div class="container">
 			<h1>sign-up</h1>
+			<input bind:value={user_name} type="text" placeholder="Name" />
 			<input bind:value={email} type="email" placeholder="Email" />
 			<input bind:value={password} type="password" placeholder="Password" />
 			<button on:click={signUp}>Sign Up</button>

@@ -66,7 +66,6 @@
 			<input bind:value={email} type="email" placeholder="Email" />
 			<input bind:value={password} type="password" placeholder="Password" />
 			<button on:click={signIn}>Sign In</button>
-			<br />
 			<button on:click={navigateToSignup}>Sign-up</button>
 		</div>
 	{/if}

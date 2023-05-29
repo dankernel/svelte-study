@@ -34,7 +34,16 @@ button {
 	color: #fff;
 	border: none;
 	border-radius: 4px;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	cursor: pointer;
+}
+
+input[type='checkbox'],
+input[type='radio'] {
+	display: inline-block;
+	width: auto;
+	margin-right: 5px;
 }
 
 button:hover {
@@ -44,4 +53,16 @@ button:hover {
 .signup-link {
 	text-align: center;
 	margin-top: 10px;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th,
+td {
+	border: 1px solid black;
+	padding: 8px;
+	text-align: left;
 }
