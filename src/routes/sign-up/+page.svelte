@@ -1,18 +1,12 @@
 <script lang="ts">
-	import { PUBLIC_DB_API_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-	import { createClient } from '@supabase/supabase-js';
+	import { supabase } from '$lib/supabase';
 	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
-
-	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
-	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
-
-	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 	let user_name: string = '';
 	let email: string = '';
 	let password: string = '';
 
-	supabase.auth.onAuthStateChange((event, session) => {
+	supabase.auth.onAuthStateChange((session) => {
 		session = session;
 	});
 
