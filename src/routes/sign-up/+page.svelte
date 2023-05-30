@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { supabase } from '$lib/supabase';
-	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	let user_name: string = '';
 	let email: string = '';
@@ -62,5 +62,3 @@
 		</div>
 	{/if}
 {/await}
-
-<SvelteToast />

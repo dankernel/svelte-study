@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_DB_API_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
 	import { createClient } from '@supabase/supabase-js';
-	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
+	import { toast } from '@zerodevx/svelte-toast';
 
 	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
 	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
@@ -199,5 +199,3 @@
 		<button on:click={gotoLogin}>login</button>
 	{/if}
 {/await}
-
-<SvelteToast />
