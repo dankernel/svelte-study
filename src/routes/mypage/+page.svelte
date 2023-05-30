@@ -1,7 +1,16 @@
 <script lang="ts">
 	import { getSession, logOut } from '$lib/authenticate';
 	import { supabase } from '$lib/supabase';
-	import { Button } from 'flowbite-svelte';
+	import {
+		Button,
+		Heading,
+		Table,
+		TableBody,
+		TableBodyCell,
+		TableBodyRow,
+		TableHead,
+		TableHeadCell
+	} from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
 	let subscriptionType = 'basic';
@@ -83,11 +92,11 @@
 
 		readSubscribe();
 	};
-
-	function gotoLogin() {
-		location.href = 'login';
-	}
 </script>
+
+<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl"
+	>My Page
+</Heading>
 
 {#await getSession() then session}
 	{#if session}
@@ -97,30 +106,28 @@
 			<h1>Subscription</h1>
 
 			{#if my_subscriptions.length > 0}
-				<table>
-					<thead>
-						<tr>
-							{#each Object.keys(my_subscriptions[0]) as key}
-								<th>{key}</th>
-							{/each}
-							<th>Action</th>
-						</tr>
-					</thead>
-					<tbody>
+				<Table striped={true}>
+					<TableHead>
+						{#each Object.keys(my_subscriptions[0]) as key}
+							<TableHeadCell>{key}</TableHeadCell>
+						{/each}
+						<TableHeadCell>Action</TableHeadCell>
+					</TableHead>
+					<TableBody class="divide-y">
 						{#each my_subscriptions as item}
-							<tr>
+							<TableBodyRow>
 								{#each Object.values(item) as value}
-									<td>{value}</td>
+									<TableBodyCell>{value}</TableBodyCell>
 								{/each}
-								<td
+								<TableBodyCell
 									><Button color="red" on:click={() => cancelSubscription(item.id)}
 										>구독 취소</Button
-									></td
+									></TableBodyCell
 								>
-							</tr>
+							</TableBodyRow>
 						{/each}
-					</tbody>
-				</table>
+					</TableBody>
+				</Table>
 			{:else}
 				<p><center>No data</center></p>
 			{/if}
@@ -135,6 +142,7 @@
 			<Button on:click={readSubscribe}>Update Subscribe</Button>
 
 			<br />
+
 			<div class="container">
 				<h1>Update</h1>
 				<input bind:value={user_name} type="text" placeholder="user_name" />
@@ -145,6 +153,6 @@
 		<Button color="green" on:click={logOut}>Log out</Button>
 	{:else}
 		<h1>wrong approach</h1>
-		<Button color="green" on:click={gotoLogin}>Login</Button>
+		<Button color="green"><a href="/login">Login</a></Button>
 	{/if}
 {/await}
