@@ -1,5 +1,12 @@
 <script>
+	import { SvelteToast } from '@zerodevx/svelte-toast';
 	import '../app.postcss';
+	import Navbar from '../components/Navbar.svelte';
 </script>
 
-<slot />
+<Navbar />
+<div class="container">
+	<slot />
+</div>
+
+<SvelteToast />

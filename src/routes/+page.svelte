@@ -1,13 +1,11 @@
 <script lang="ts">
-	// location.replace('login');
-	import { Alert } from 'flowbite-svelte';
-	import Navbar from '../components/Navbar.svelte';
+	import { Button } from 'flowbite-svelte';
+	function gotoLogin() {
+		location.href = 'login';
+	}
 </script>
 
-<Navbar />
-
-<h1>Hello</h1>
-
-<style lang="scss">
-	@import '/src/styles.scss';
-</style>
+<div class="container">
+	<h1>Hello</h1>
+	<Button color="green" on:click={gotoLogin}>login</Button>
+</div>

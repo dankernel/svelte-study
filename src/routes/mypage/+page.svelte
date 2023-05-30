@@ -1,76 +1,21 @@
 <script lang="ts">
-	import { PUBLIC_DB_API_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-	import { createClient } from '@supabase/supabase-js';
-	import { SvelteToast } from '@zerodevx/svelte-toast';
-	import { toast } from '@zerodevx/svelte-toast';
-	import Navbar from '../../components/Navbar.svelte';
-
-	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
-	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
-
-	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+	import { getSession, logOut } from '$lib/authenticate';
+	import { supabase } from '$lib/supabase';
+	import { Button } from 'flowbite-svelte';
+	import { onMount } from 'svelte';
 
 	let subscriptionType = 'basic';
 	let user_name = '';
 	let user;
-	let email = '';
-	let password = '';
 	let session;
 	let my_subscriptions: any[] = [];
 
-	const signIn = async () => {
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email,
-			password
-		});
-		if (error) {
-			console.error('Error : ' + error.message);
-			toast.push('Sign in fail' + error.message, {
-				theme: {
-					'--toastColor': 'mintcream',
-					'--toastBackground': 'rgba(187,72,120,0.9)',
-					'--toastBarBackground': '#2F855A'
-				}
-			});
-		} else {
-			location.reload();
-		}
-	};
-
-	const getSession = async () => {
-		const { data, error } = await supabase.auth.getSession();
-		return data.session;
-	};
-
-	const getEmail = async () => {
-		const { data, error } = await supabase.auth.getSession();
-		return data.session?.user.email;
-	};
-
 	const update = async () => {
-		const { data, error } = await supabase.auth.updateUser({
-			data: { user_name: user_name }
+		await supabase.auth.updateUser({
+			data: { user_name }
 		});
 		session = getSession();
 	};
-
-	const logOut = async (): Promise<void> => {
-		const { error } = await supabase.auth.signOut();
-		if (error) console.error(error);
-		location.reload();
-	};
-
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-	import { json } from '@sveltejs/kit';
-
-	const navigateToSignup = (): void => {
-		goto('/sign-up');
-	};
-
-	function gotoLogin() {
-		location.href = 'login';
-	}
 
 	onMount(async () => {
 		user = (await supabase.auth.getSession()).data.session?.user;
@@ -138,13 +83,15 @@
 
 		readSubscribe();
 	};
-</script>
 
-<Navbar />
+	function gotoLogin() {
+		location.href = 'login';
+	}
+</script>
 
 {#await getSession() then session}
 	{#if session}
-		<p>Welcome, {session.user.user_metadata['user_name']}!</p>
+		<p>Welcome, {session.user.user_metadata['user_name']}</p>
 
 		<div>
 			<h1>Subscription</h1>
@@ -165,7 +112,11 @@
 								{#each Object.values(item) as value}
 									<td>{value}</td>
 								{/each}
-								<td><button on:click={() => cancelSubscription(item.id)}>구독 취소</button></td>
+								<td
+									><Button color="red" on:click={() => cancelSubscription(item.id)}
+										>구독 취소</Button
+									></td
+								>
 							</tr>
 						{/each}
 					</tbody>
@@ -180,26 +131,20 @@
 				<option value="premium">premium</option>
 				<!-- Add more options as needed -->
 			</select>
-			<button on:click={handleSubscription}>Subscribe</button>
-			<button on:click={readSubscribe}>Update Subscribe</button>
+			<Button color="green" on:click={handleSubscription}>Subscribe</Button>
+			<Button on:click={readSubscribe}>Update Subscribe</Button>
 
 			<br />
 			<div class="container">
 				<h1>Update</h1>
 				<input bind:value={user_name} type="text" placeholder="user_name" />
-				<button on:click={update}>Update</button>
+				<Button color="green" on:click={update}>Update</Button>
 			</div>
 		</div>
 
-		<button on:click={logOut}>Log out</button>
+		<Button color="green" on:click={logOut}>Log out</Button>
 	{:else}
 		<h1>wrong approach</h1>
-		<button on:click={gotoLogin}>login</button>
+		<Button color="green" on:click={gotoLogin}>Login</Button>
 	{/if}
 {/await}
-
-<SvelteToast />
-
-<style lang="scss">
-	@import '/src/styles.scss';
-</style>
