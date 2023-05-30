@@ -153,6 +153,6 @@
 		<Button color="green" on:click={logOut}>Log out</Button>
 	{:else}
 		<h1>wrong approach</h1>
-		<Button color="green"><a href="/login">Login</a></Button>
+		<a href="/login"> <Button color="green">Login</Button></a>
 	{/if}
 {/await}
