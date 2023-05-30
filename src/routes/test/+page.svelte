@@ -1,6 +1,5 @@
 <script>
-	import { SvelteToast } from '@zerodevx/svelte-toast';
-	import { toast } from '@zerodevx/svelte-toast';
+	import { SvelteToast, toast } from '@zerodevx/svelte-toast';
 </script>
 
 <SvelteToast />
