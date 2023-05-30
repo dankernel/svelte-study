@@ -112,3 +112,4 @@
 	<Gallery items={images} class="gap-4 grid-cols-2 md:grid-cols-3" />
 	<a href="/login"> <Button color="green">Login</Button></a>
 </div>
+

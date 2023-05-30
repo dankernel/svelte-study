@@ -2,6 +2,7 @@
 	import { getSession, logOut, signIn } from '$lib/authenticate';
 	import { toast } from '@zerodevx/svelte-toast';
 	import { Button, Heading, Input, Label } from 'flowbite-svelte';
+
 	let email = '';
 	let password = '';
 </script>

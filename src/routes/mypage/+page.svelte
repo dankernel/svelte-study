@@ -11,6 +11,7 @@
 		TableHead,
 		TableHeadCell
 	} from 'flowbite-svelte';
+
 	import { onMount } from 'svelte';
 
 	let subscriptionType = 'basic';
