@@ -2,6 +2,7 @@
 	import { getSession, logOut, signUp } from '$lib/authenticate';
 	import { supabase } from '$lib/supabase';
 	import { toast } from '@zerodevx/svelte-toast';
+	import { Button, Input, Label } from 'flowbite-svelte';
 
 	let user_name: string = '';
 	let email: string = '';
@@ -19,10 +20,21 @@
 	{:else}
 		<div class="container">
 			<h1>sign-up</h1>
-			<input bind:value={user_name} type="text" placeholder="Name" />
-			<input bind:value={email} type="email" placeholder="Email" />
-			<input bind:value={password} type="password" placeholder="Password" />
-			<button on:click={() => signUp({ user_name, email, password, toast })}>Sign Up</button>
+			<div class="mb-6">
+				<Label for="text" class="mb-2">Name</Label>
+				<Input bind:value={user_name} type="text" placeholder="Name" />
+			</div>
+			<div class="mb-6">
+				<Label for="email" class="mb-2">Email address</Label>
+				<Input bind:value={email} type="email" placeholder="Email" />
+			</div>
+			<div class="mb-6">
+				<Label for="email" class="mb-2">password</Label>
+				<Input bind:value={password} type="password" placeholder="Password" />
+			</div>
+			<Button color="green" on:click={() => signUp({ user_name, email, password, toast })}
+				>Sign Up</Button
+			>
 		</div>
 	{/if}
 {/await}

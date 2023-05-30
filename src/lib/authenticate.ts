@@ -67,7 +67,7 @@ export const signIn = async ({
 
 export const getSession = async () => {
 	const { data } = await supabase.auth.getSession();
-	return data.session?.user.email;
+	return data.session;
 };
 
 export const getEmail = async () => {

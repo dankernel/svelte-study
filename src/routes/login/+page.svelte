@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { getSession, logOut, signIn } from '$lib/authenticate';
 	import { toast } from '@zerodevx/svelte-toast';
+	import { Button, Heading, Input, Label } from 'flowbite-svelte';
 
 	let email = '';
 	let password = '';
@@ -8,18 +9,28 @@
 
 {#await getSession() then session}
 	{#if session}
-		<p>Welcome, {session}!</p>
+		<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl"
+			>Welcome, {session.user.user_metadata['user_name']}</Heading
+		>
 		<a href="/mypage">My Page</a>
 
 		<br />
-		<button on:click={logOut}>Log out</button>
+		<Button color="green" on:click={logOut}>Log out</Button>
 	{:else}
 		<div class="container">
-			<h1>Login</h1>
-			<input bind:value={email} type="email" placeholder="Email" />
-			<input bind:value={password} type="password" placeholder="Password" />
-			<button on:click={() => signIn({ email, password, toast })}>Sign In</button>
-			<a href="/sign-up">Sign-up</a>
+			<Heading tag="h1" class="mb-4" customSize="text-4xl font-extrabold  md:text-5xl lg:text-6xl"
+				>Login</Heading
+			>
+			<div class="mb-6">
+				<Label for="email" class="mb-2">Email address</Label>
+				<Input bind:value={email} type="email" placeholder="Email" />
+			</div>
+			<div class="mb-6">
+				<Label for="password" class="mb-2">Password</Label>
+				<Input bind:value={password} type="password" placeholder="Password" />
+			</div>
+			<Button color="green" on:click={() => signIn({ email, password, toast })}>Sign In</Button>
+			<Button color="green"><a href="/sign-up">Sign Up</a></Button>
 		</div>
 	{/if}
 {/await}
