@@ -1,10 +1,3 @@
-<script lang="ts">
-	// location.replace('login');
-
-	function gotoLogin() {
-		location.href = 'login';
-	}
-</script>
-
 <h1>Hello</h1>
-<button on:click={gotoLogin}>login</button>
+<!-- Unlike other frameworks, plain anchor elements can be used in SvelteKit. -->
+<a href="/login">Login</a>

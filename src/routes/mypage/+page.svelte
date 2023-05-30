@@ -1,74 +1,21 @@
 <script lang="ts">
-	import { PUBLIC_DB_API_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-	import { createClient } from '@supabase/supabase-js';
+	import { getSession, logOut } from '$lib/authenticate';
+	import { supabase } from '$lib/supabase';
 	import { toast } from '@zerodevx/svelte-toast';
-
-	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
-	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
-
-	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+	import { onMount } from 'svelte';
 
 	let subscriptionType = 'basic';
 	let user_name = '';
 	let user;
-	let email = '';
-	let password = '';
 	let session;
 	let my_subscriptions: any[] = [];
 
-	const signIn = async () => {
-		const { data, error } = await supabase.auth.signInWithPassword({
-			email,
-			password
-		});
-		if (error) {
-			console.error('Error : ' + error.message);
-			toast.push('Sign in fail' + error.message, {
-				theme: {
-					'--toastColor': 'mintcream',
-					'--toastBackground': 'rgba(187,72,120,0.9)',
-					'--toastBarBackground': '#2F855A'
-				}
-			});
-		} else {
-			console.log(data);
-			location.reload();
-		}
-	};
-
-	const getSession = async () => {
-		const { data, error } = await supabase.auth.getSession();
-		return data.session;
-	};
-
-	const getEmail = async () => {
-		const { data, error } = await supabase.auth.getSession();
-		return data.session?.user.email;
-	};
-
 	const update = async () => {
-		const { data, error } = await supabase.auth.updateUser({
-			data: { user_name: user_name }
+		await supabase.auth.updateUser({
+			data: { user_name }
 		});
 		session = getSession();
 	};
-
-	const logOut = async (): Promise<void> => {
-		const { error } = await supabase.auth.signOut();
-		if (error) console.error(error);
-		location.reload();
-	};
-
-	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
-
-	const navigateToSignup = (): void => {
-		goto('/sign-up');
-	};
-
-	function gotoLogin() {
-		location.href = 'login';
-	}
 
 	onMount(async () => {
 		user = (await supabase.auth.getSession()).data.session?.user;
@@ -196,6 +143,6 @@
 		<button on:click={logOut}>Log out</button>
 	{:else}
 		<h1>wrong approach</h1>
-		<button on:click={gotoLogin}>login</button>
+		<a href="/login">Login</a>
 	{/if}
 {/await}
