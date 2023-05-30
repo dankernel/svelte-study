@@ -8,7 +8,3 @@
 
 <h1>Hello</h1>
 <button on:click={gotoLogin}>login</button>
-
-<style lang="scss">
-	@import '/src/styles.scss';
-</style>
