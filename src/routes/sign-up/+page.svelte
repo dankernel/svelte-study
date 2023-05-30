@@ -1,58 +1,15 @@
 <script lang="ts">
-	import { PUBLIC_DB_API_KEY, PUBLIC_SUPABASE_URL } from '$env/static/public';
-	import { createClient } from '@supabase/supabase-js';
-	import { SvelteToast } from '@zerodevx/svelte-toast';
+	import { getSession, logOut, signUp } from '$lib/authenticate';
+	import { supabase } from '$lib/supabase';
 	import { toast } from '@zerodevx/svelte-toast';
-
-	const SUPABASE_URL = PUBLIC_SUPABASE_URL;
-	const SUPABASE_ANON_KEY = PUBLIC_DB_API_KEY;
-
-	const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 	let user_name: string = '';
 	let email: string = '';
 	let password: string = '';
 
-	supabase.auth.onAuthStateChange((event, session) => {
+	supabase.auth.onAuthStateChange((session) => {
 		session = session;
 	});
-
-	const signUp = async (): Promise<void> => {
-		const { data, error } = await supabase.auth.signUp({
-			email,
-			password,
-			options: {
-				data: { user_name: user_name }
-			}
-		});
-
-		if (error) {
-			console.error(error);
-			toast.push(error.message, {
-				theme: {
-					'--toastColor': 'mintcream',
-					'--toastBackground': 'rgba(187,72,120,0.9)',
-					'--toastBarBackground': '#2F855A'
-				}
-			});
-		} else {
-			console.log(data);
-			location.replace('login');
-		}
-	};
-
-	const getSession = async () => {
-		const { data, error } = await supabase.auth.getSession();
-		return data.session?.user.email;
-	};
-	getSession().then((session) => {
-		console.log(session);
-	});
-
-	const logOut = async (): Promise<void> => {
-		const { error } = await supabase.auth.signOut();
-		if (error) console.error(error);
-	};
 </script>
 
 {#await getSession() then session}
@@ -65,13 +22,7 @@
 			<input bind:value={user_name} type="text" placeholder="Name" />
 			<input bind:value={email} type="email" placeholder="Email" />
 			<input bind:value={password} type="password" placeholder="Password" />
-			<button on:click={signUp}>Sign Up</button>
+			<button on:click={() => signUp({ user_name, email, password, toast })}>Sign Up</button>
 		</div>
 	{/if}
 {/await}
-
-<SvelteToast />
-
-<style lang="scss">
-	@import '/src/styles.scss';
-</style>
