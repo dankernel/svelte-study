@@ -15,6 +15,7 @@
 		<NavLi href="/login">Login</NavLi>
 		<NavLi href="/services">Services</NavLi>
 		<NavLi href="/pricing">Pricing</NavLi>
+		<NavLi href="/camera">Camera</NavLi>
 		<NavLi href="/mypage">MyPage</NavLi>
 	</NavUl>
 </Navbar>

@@ -35,6 +35,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@ffmpeg/core": "^0.11.0",
+		"@ffmpeg/ffmpeg": "^0.11.6",
 		"@popperjs/core": "^2.11.8",
 		"@supabase/supabase-js": "^2.22.0",
 		"@zerodevx/svelte-toast": "^0.9.3",
