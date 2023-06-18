@@ -1,51 +1,57 @@
 <script lang="ts">
 	import { Heading } from 'flowbite-svelte';
-
 	import { onMount } from 'svelte';
-
-	onMount(async () => {
-		mainInit();
-	});
 
 	let apiEndpoint = 'http://192.168.10.17:31258';
 	let buttonText = 'Capture and Send Image';
-	let data = null;
+	let data: any = null;
 
-	// Init camera
-	function camInit(stream) {
-		var cameraView = document.getElementById('cameraview');
+	let cameraView: HTMLVideoElement | null = null;
+
+	onMount(() => {
+		mainInit();
+	});
+
+	function camInit(stream: MediaStream): void {
+		cameraView = document.getElementById('cameraview') as HTMLVideoElement;
 		cameraView.srcObject = stream;
-		cameraView.play();
+		cameraView.onloadedmetadata = function () {
+			cameraView!.play();
+		};
 	}
 
-	function camInitFailed(error) {
-		console.log('get camera permission failed : ', error);
-		alert('get camera permission failed', error);
+	function camInitFailed(error: any): void {
+		console.error('get camera permission failed : ', error);
+		alert('get camera permission failed');
 	}
 
-	// Main init
-
-	function mainInit() {
-		// Check navigator media device available
+	async function mainInit(): Promise<void> {
 		if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-			// Navigator mediaDevices not supported
 			alert('Media Device not supported');
 			return;
 		}
 
-		navigator.mediaDevices.getUserMedia({ video: true }).then(camInit).catch(camInitFailed);
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+			camInit(stream);
+		} catch (error) {
+			camInitFailed(error);
+		}
 	}
 
-	async function captureAndSendImage() {
-		const cameraView = document.getElementById('cameraview') as HTMLVideoElement;
+	async function captureAndSendImage(): Promise<void> {
+		if (!cameraView) return;
+
 		const canvas = document.createElement('canvas');
 		canvas.width = cameraView.videoWidth;
 		canvas.height = cameraView.videoHeight;
-		canvas.getContext('2d').drawImage(cameraView, 0, 0);
+
+		const ctx = canvas.getContext('2d');
+		ctx!.drawImage(cameraView, 0, 0);
 
 		const imageBase64 = canvas.toDataURL('image/jpeg');
-		// Remove data:image/jpeg;base64, from the string
 		const base64Image = imageBase64.split(',')[1];
+
 		const response = await fetch(apiEndpoint, {
 			method: 'POST',
 			headers: {
@@ -56,10 +62,9 @@
 
 		if (!response.ok) {
 			throw new Error(`HTTP error! status: ${response.status}`);
-		} else {
-			data = await response.json();
-			console.log(data);
 		}
+
+		data = await response.json();
 	}
 </script>
 
@@ -69,10 +74,7 @@
 
 <div>
 	<video id="cameraview" width="320" height="240" />
-
 	<input bind:value={apiEndpoint} type="text" placeholder="Enter API Endpoint" />
-
 	<button on:click={captureAndSendImage}>{buttonText}</button>
-
 	<pre>{JSON.stringify(data, null, 2)}</pre>
 </div>
