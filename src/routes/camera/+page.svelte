@@ -32,7 +32,13 @@
 		}
 
 		try {
-			const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+			const stream = await navigator.mediaDevices.getUserMedia({
+				video: {
+					width: 640,
+					height: 480,
+					facingMode: 'environment'
+				}
+			});
 			camInit(stream);
 		} catch (error) {
 			camInitFailed(error);
@@ -73,7 +79,7 @@
 >
 
 <div>
-	<video id="cameraview" width="320" height="240" />
+	<video id="cameraview" autoplay playsinline />
 	<input bind:value={apiEndpoint} type="text" placeholder="Enter API Endpoint" />
 	<button on:click={captureAndSendImage}>{buttonText}</button>
 	<pre>{JSON.stringify(data, null, 2)}</pre>
