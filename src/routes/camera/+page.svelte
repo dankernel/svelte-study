@@ -20,6 +20,7 @@
 
 	function camInitFailed(error) {
 		console.log('get camera permission failed : ', error);
+		alert('get camera permission failed', error);
 	}
 
 	// Main init
