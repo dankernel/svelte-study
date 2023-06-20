@@ -111,8 +111,8 @@
 	<div style="position: relative; width: 320px; height: 240px; object-fit: contain;">
 		<video
 			id="cameraview"
-			width="480"
-			height="640"
+			width="1280"
+			height="720"
 			autoplay
 			playsinline
 			bind:this={cameraView}
@@ -121,8 +121,8 @@
 
 		<canvas
 			id="overlay"
-			width="480"
-			height="640"
+			width="1280"
+			height="700"
 			bind:this={overlay}
 			style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
 		/>
