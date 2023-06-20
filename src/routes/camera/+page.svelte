@@ -108,7 +108,7 @@
 >
 
 <div>
-	<div style="position: relative; width: 480px; height: 320px;">
+	<div style="position: relative; width: 320px; height: 240px;">
 		<video
 			id="cameraview"
 			width="1280"
