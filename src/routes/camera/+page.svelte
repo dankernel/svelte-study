@@ -48,6 +48,8 @@
 		}
 	}
 
+	let color_list = ['#8622ff', '#fe0056', '#00ffce', '#ffff00', '#ff00ff', '#bc3989', '#b25050'];
+
 	function drawBoundingBoxes() {
 		if (!data || !overlay) {
 			console.log('pass');
@@ -56,10 +58,11 @@
 
 		const context = overlay.getContext('2d');
 		context.clearRect(0, 0, overlay.width, overlay.height);
-		context.strokeStyle = '#FF0000';
-		context.lineWidth = 5;
+		context.lineWidth = 10;
 
-		data.boxes.forEach(([x1, y1, x2, y2]) => {
+		data.boxes.forEach(([x1, y1, x2, y2, conf, cla]) => {
+			context.strokeStyle = color_list[cla];
+
 			console.log(x1, y1, x2 - x1, y2 - y1);
 			context.strokeRect(x1, y1, x2 - x1, y2 - y1);
 		});
