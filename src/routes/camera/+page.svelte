@@ -1,16 +1,19 @@
 <script lang="ts">
 	import { Heading } from 'flowbite-svelte';
-	import { onMount } from 'svelte';
+	import { afterUpdate, onMount } from 'svelte';
 
 	let apiEndpoint = 'https://vhi44p15j3.execute-api.ap-northeast-2.amazonaws.com/test/momp-od';
 	let buttonText = 'Capture and Send Image';
 	let data: any = null;
 
 	let cameraView: HTMLVideoElement | null = null;
+	let overlay: HTMLCanvasElement;
 
 	onMount(() => {
 		mainInit();
 	});
+
+	afterUpdate(drawBoundingBoxes);
 
 	function camInit(stream: MediaStream): void {
 		cameraView = document.getElementById('cameraview') as HTMLVideoElement;
@@ -45,8 +48,34 @@
 		}
 	}
 
+	function drawBoundingBoxes() {
+		if (!data || !overlay) {
+			console.log('pass');
+			return;
+		}
+
+		const context = overlay.getContext('2d');
+		context.clearRect(0, 0, overlay.width, overlay.height);
+		context.strokeStyle = '#FF0000';
+		context.lineWidth = 5;
+
+		data.boxes.forEach(([x1, y1, x2, y2]) => {
+			console.log(x1, y1, x2 - x1, y2 - y1);
+			context.strokeRect(x1, y1, x2 - x1, y2 - y1);
+		});
+	}
+
 	async function captureAndSendImage(): Promise<void> {
 		if (!cameraView) return;
+
+		if (!cameraView.paused) {
+			cameraView.pause();
+		} else {
+			cameraView.play();
+			const context = overlay.getContext('2d');
+			context.clearRect(0, 0, overlay.width, overlay.height);
+			return;
+		}
 
 		const canvas = document.createElement('canvas');
 		canvas.width = cameraView.videoWidth;
@@ -79,7 +108,26 @@
 >
 
 <div>
-	<video id="cameraview" autoplay playsinline />
+	<div style="position: relative; width: 640px; height: 480px;">
+		<video
+			id="cameraview"
+			width="640"
+			height="480"
+			autoplay
+			playsinline
+			bind:this={cameraView}
+			style="position: absolute; top: 0; left: 0;"
+		/>
+
+		<canvas
+			id="overlay"
+			width="640"
+			height="480"
+			bind:this={overlay}
+			style="position: absolute; top: 0; left: 0;"
+		/>
+	</div>
+
 	<input bind:value={apiEndpoint} type="text" placeholder="Enter API Endpoint" />
 	<button on:click={captureAndSendImage}>{buttonText}</button>
 	<pre>{JSON.stringify(data, null, 2)}</pre>
