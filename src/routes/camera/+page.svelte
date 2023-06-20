@@ -12,10 +12,15 @@
 	let cameras = [];
 	let selectedCameraId: string | undefined;
 
+	let isLandscape = false;
+
 	onMount(() => {
 		loadCameras();
 
 		mainInit();
+
+		checkOrientation();
+		window.addEventListener('orientationchange', checkOrientation);
 	});
 
 	afterUpdate(drawBoundingBoxes);
@@ -100,6 +105,10 @@
 		}
 	}
 
+	function checkOrientation() {
+		isLandscape = window.matchMedia('(orientation: landscape)').matches;
+	}
+
 	async function captureAndSendImage(): Promise<void> {
 		if (!cameraView) return;
 
@@ -142,37 +151,41 @@
 	>Camera</Heading
 >
 
-<div>
-	<div style="position: relative; width: 320px; height: 240px;">
-		<video
-			id="cameraview"
-			width="1280"
-			height="720"
-			autoplay
-			playsinline
-			bind:this={cameraView}
-			style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-		/>
+{#if isLandscape}
+	<div>
+		<div style="position: relative; width: 320px; height: 240px;">
+			<video
+				id="cameraview"
+				width="1280"
+				height="720"
+				autoplay
+				playsinline
+				bind:this={cameraView}
+				style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+			/>
 
-		<canvas
-			id="overlay"
-			width="1280"
-			height="700"
-			bind:this={overlay}
-			style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
-		/>
+			<canvas
+				id="overlay"
+				width="1280"
+				height="700"
+				bind:this={overlay}
+				style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
+			/>
+		</div>
+
+		<input bind:value={apiEndpoint} type="text" placeholder="Enter API Endpoint" />
+		<button on:click={captureAndSendImage}>{buttonText}</button>
+		<pre>{JSON.stringify(data, null, 2)}</pre>
+
+		<select bind:value={selectedCameraId}>
+			<option disabled={true} selected={true}> -- select a camera --</option>
+			{#each cameras as camera (camera.deviceId)}
+				<option value={camera.deviceId}>{camera.label}</option>
+			{/each}
+		</select>
+
+		<button on:click={startCamera}>Start Camera</button>
 	</div>
-
-	<input bind:value={apiEndpoint} type="text" placeholder="Enter API Endpoint" />
-	<button on:click={captureAndSendImage}>{buttonText}</button>
-	<pre>{JSON.stringify(data, null, 2)}</pre>
-
-	<select bind:value={selectedCameraId}>
-		<option disabled={true} selected={true}>-- select a camera --</option>
-		{#each cameras as camera (camera.deviceId)}
-			<option value={camera.deviceId}>{camera.label}</option>
-		{/each}
-	</select>
-
-	<button on:click={startCamera}>Start Camera</button>
-</div>
+{:else}
+	<div>가로 모드로 전환해 주세요</div>
+{/if}
