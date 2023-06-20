@@ -37,8 +37,8 @@
 		try {
 			const stream = await navigator.mediaDevices.getUserMedia({
 				video: {
-					width: 1280,
-					height: 720,
+					width: 720,
+					height: 1280,
 					facingMode: 'environment'
 				}
 			});
@@ -108,11 +108,11 @@
 >
 
 <div>
-	<div style="position: relative; width: 320px; height: 240px; object-fit: contain;">
+	<div style="position: relative; width: 320px; height: 480px; object-fit: contain;">
 		<video
 			id="cameraview"
-			width="1280"
-			height="720"
+			width="720"
+			height="1280"
 			autoplay
 			playsinline
 			bind:this={cameraView}
@@ -121,8 +121,8 @@
 
 		<canvas
 			id="overlay"
-			width="1280"
-			height="700"
+			width="720"
+			height="1280"
 			bind:this={overlay}
 			style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain;"
 		/>
