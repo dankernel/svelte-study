@@ -9,7 +9,12 @@
 	let cameraView: HTMLVideoElement | null = null;
 	let overlay: HTMLCanvasElement;
 
+	let cameras = [];
+	let selectedCameraId: string | undefined;
+
 	onMount(() => {
+		loadCameras();
+
 		mainInit();
 	});
 
@@ -66,6 +71,30 @@
 			console.log(x1, y1, x2 - x1, y2 - y1);
 			context.strokeRect(x1, y1, x2 - x1, y2 - y1);
 		});
+	}
+
+	async function loadCameras() {
+		const devices = await navigator.mediaDevices.enumerateDevices();
+
+		cameras = devices.filter((device) => device.kind === 'videoinput');
+	}
+
+	async function startCamera() {
+		if (!selectedCameraId) return;
+
+		const constraints = {
+			video: {
+				deviceId: { exact: selectedCameraId }
+			}
+		};
+
+		try {
+			const stream = await navigator.mediaDevices.getUserMedia(constraints);
+			const videoElement = document.getElementById('cameraview') as HTMLVideoElement;
+			videoElement.srcObject = stream;
+		} catch (err) {
+			console.error('Error accessing camera:', err);
+		}
 	}
 
 	async function captureAndSendImage(): Promise<void> {
@@ -134,4 +163,13 @@
 	<input bind:value={apiEndpoint} type="text" placeholder="Enter API Endpoint" />
 	<button on:click={captureAndSendImage}>{buttonText}</button>
 	<pre>{JSON.stringify(data, null, 2)}</pre>
+
+	<select bind:value={selectedCameraId}>
+		<option disabled={true} selected={true}>-- select a camera --</option>
+		{#each cameras as camera (camera.deviceId)}
+			<option value={camera.deviceId}>{camera.label}</option>
+		{/each}
+	</select>
+
+	<button on:click={startCamera}>Start Camera</button>
 </div>
