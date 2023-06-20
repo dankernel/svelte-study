@@ -2,7 +2,7 @@
 	import { Heading } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
-	let apiEndpoint = 'http://192.168.10.17:31258';
+	let apiEndpoint = 'https://vhi44p15j3.execute-api.ap-northeast-2.amazonaws.com/test/momp-od';
 	let buttonText = 'Capture and Send Image';
 	let data: any = null;
 
@@ -63,7 +63,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ image: base64Image })
+			body: JSON.stringify({ data: base64Image })
 		});
 
 		if (!response.ok) {
